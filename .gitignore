@@ -2,6 +2,5 @@ api_keys.json
 geckodriver.log
 /data/*
 all_ids*
-gibiofficial*
 .*
 !/.gitignore
