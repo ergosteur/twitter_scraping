@@ -19,8 +19,8 @@ auth = tweepy.OAuthHandler(keys['consumer_key'], keys['consumer_secret'])
 auth.set_access_token(keys['access_token'], keys['access_token_secret'])
 api = tweepy.API(auth)
 user = user.lower()
-output_file = '{}.json'.format(user)
-output_file_short = '{}_short.json'.format(user)
+output_file = 'data/{}.json'.format(user)
+output_file_short = 'data/{}_short.json'.format(user)
 compression = zipfile.ZIP_DEFLATED
 
 with open('all_ids.json') as f:
@@ -51,7 +51,7 @@ with open(output_file, 'w') as outfile:
     json.dump(all_data, outfile)
 
 print('creating ziped master json file')
-zf = zipfile.ZipFile('{}.zip'.format(user), mode='w')
+zf = zipfile.ZipFile('data/{}.zip'.format(user), mode='w')
 zf.write(output_file, compress_type=compression)
 zf.close()
 
@@ -89,7 +89,7 @@ with open(output_file_short) as master_file:
     data = json.load(master_file)
     fields = ["favorite_count", "source", "text", "in_reply_to_screen_name", "is_retweet", "created_at", "retweet_count", "id_str"]
     print('creating CSV version of minimized json master file')
-    csvFile = open('{}.csv'.format(user), 'w', newline='', encoding='utf-8')
+    csvFile = open('data/{}.csv'.format(user), 'w', newline='', encoding='utf-8')
     f = csv.writer(csvFile, delimiter=',', quotechar='"', quoting=csv.QUOTE_ALL)
     f.writerow(fields)
     for x in data:
