@@ -1,3 +1,4 @@
+import datetime
 import tweepy
 import json
 import math
@@ -18,8 +19,8 @@ auth = tweepy.OAuthHandler(keys['consumer_key'], keys['consumer_secret'])
 auth.set_access_token(keys['access_token'], keys['access_token_secret'])
 api = tweepy.API(auth)
 user = user.lower()
-output_file = '{}.json'.format(user)
-output_file_short = '{}_short.json'.format(user)
+output_file = 'data/{}.json'.format(user)
+output_file_short = 'data/{}_short.json'.format(user)
 compression = zipfile.ZIP_DEFLATED
 
 with open('all_ids.json') as f:
@@ -32,6 +33,7 @@ start = 0
 end = 100
 limit = len(ids)
 i = math.ceil(limit / 100)
+date_format_twitter = "%a %b %d %X %z %Y"
 
 for go in range(i):
     print('currently getting {} - {}'.format(start, end))
@@ -49,7 +51,7 @@ with open(output_file, 'w') as outfile:
     json.dump(all_data, outfile)
 
 print('creating ziped master json file')
-zf = zipfile.ZipFile('{}.zip'.format(user), mode='w')
+zf = zipfile.ZipFile('data/{}.zip'.format(user), mode='w')
 zf.write(output_file, compress_type=compression)
 zf.close()
 
@@ -68,7 +70,7 @@ with open(output_file) as json_data:
     data = json.load(json_data)
     for entry in data:
         t = {
-            "created_at": entry["created_at"],
+            "created_at": datetime.datetime.strptime(entry["created_at"], date_format_twitter).isoformat(),
             "text": entry["text"],
             "in_reply_to_screen_name": entry["in_reply_to_screen_name"],
             "retweet_count": entry["retweet_count"],
@@ -87,7 +89,7 @@ with open(output_file_short) as master_file:
     data = json.load(master_file)
     fields = ["favorite_count", "source", "text", "in_reply_to_screen_name", "is_retweet", "created_at", "retweet_count", "id_str"]
     print('creating CSV version of minimized json master file')
-    f = csv.writer(open('{}.csv'.format(user), 'w', encoding='utf-8'))
+    f = csv.writer(open('data/{}.csv'.format(user), 'w', newline='', encoding='utf-8'))
     f.writerow(fields)
     for x in data:
         f.writerow([x["favorite_count"], x["source"], x["text"], x["in_reply_to_screen_name"], x["is_retweet"], x["created_at"], x["retweet_count"], x["id_str"]])
