@@ -1,6 +1,6 @@
 api_keys.json
 geckodriver.log
-/data
+/data/*
 all_ids*
 gibiofficial*
 .*
