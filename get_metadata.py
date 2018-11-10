@@ -9,7 +9,7 @@ from tweepy import TweepError
 from time import sleep
 
 # CHANGE THIS TO THE USER YOU WANT
-user = 'realdonaldtrump'
+user = 'gibiofficial'
 
 with open('api_keys.json') as f:
     keys = json.load(f)
@@ -87,7 +87,7 @@ with open(output_file_short) as master_file:
     data = json.load(master_file)
     fields = ["favorite_count", "source", "text", "in_reply_to_screen_name", "is_retweet", "created_at", "retweet_count", "id_str"]
     print('creating CSV version of minimized json master file')
-    f = csv.writer(open('{}.csv'.format(user), 'w'))
+    f = csv.writer(open('{}.csv'.format(user), 'w', encoding='utf-8'))
     f.writerow(fields)
     for x in data:
         f.writerow([x["favorite_count"], x["source"], x["text"], x["in_reply_to_screen_name"], x["is_retweet"], x["created_at"], x["retweet_count"], x["id_str"]])
