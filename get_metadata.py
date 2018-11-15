@@ -41,7 +41,7 @@ for go in range(i):
     id_batch = ids[start:end]
     start += 100
     end += 100
-    tweets = api.statuses_lookup(id_batch)
+    tweets = api.statuses_lookup(id_batch, tweet_mode='extended')
     for tweet in tweets:
         all_data.append(dict(tweet._json))
 
@@ -66,12 +66,16 @@ def get_source(entry):
     else:
         return entry["source"]
 
+#get media
+def get_media(entry):
+    return 0
+
 with open(output_file) as json_data:
     data = json.load(json_data)
     for entry in data:
         t = {
             "created_at": datetime.datetime.strptime(entry["created_at"], date_format_twitter).isoformat(),
-            "text": entry["text"],
+            "full_text": entry["full_text"],
             "in_reply_to_screen_name": entry["in_reply_to_screen_name"],
             "retweet_count": entry["retweet_count"],
             "favorite_count": entry["favorite_count"],
@@ -87,10 +91,10 @@ with open(output_file_short, 'w') as outfile:
 
 with open(output_file_short) as master_file:
     data = json.load(master_file)
-    fields = ["favorite_count", "source", "text", "in_reply_to_screen_name", "is_retweet", "created_at", "retweet_count", "id_str"]
+    fields = ["favorite_count", "source", "full_text", "in_reply_to_screen_name", "is_retweet", "created_at", "retweet_count", "id_str"]
     print('creating CSV version of minimized json master file')
     csvFile = open('data/{}.csv'.format(user), 'w', newline='', encoding='utf-8')
     f = csv.writer(csvFile, delimiter=',', quotechar='"', quoting=csv.QUOTE_ALL)
     f.writerow(fields)
     for x in data:
-        f.writerow([x["favorite_count"], x["source"], x["text"], x["in_reply_to_screen_name"], x["is_retweet"], x["created_at"], x["retweet_count"], x["id_str"]])
+        f.writerow([x["favorite_count"], x["source"], x["full_text"], x["in_reply_to_screen_name"], x["is_retweet"], x["created_at"], x["retweet_count"], x["id_str"]])
